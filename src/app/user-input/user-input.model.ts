@@ -1,6 +1,6 @@
 export class InvestimentData {
   valorInicial!: number;
-  aplicacaoAnual!: number;
+  aplicacaoMensal!: number;
   tempo!: number;
   selic!: number;
   rendimentoCdi!: number;

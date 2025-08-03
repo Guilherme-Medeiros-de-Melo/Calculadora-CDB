@@ -11,18 +11,18 @@ import { InvestimentData } from './user-input.model';
   styleUrl: './user-input.component.css',
 })
 export class UserInputComponent {
-  valorInicial!: number;
-  aplicacaoAnual!: number;
-  tempo!: number;
-  selic!: number;
-  rendimentoCdi!: number;
+  valorInicial: number = 1000;
+  aplicacaoMensal: number = 100;
+  tempo: number = 12;
+  selic: number = 14.5;
+  rendimentoCdi: number = 120;
 
   calculate = output<InvestimentData>();
 
   onSubmit() {
     this.calculate.emit({
       valorInicial: this.valorInicial,
-      aplicacaoAnual: this.aplicacaoAnual,
+      aplicacaoMensal: this.aplicacaoMensal,
       tempo: this.tempo,
       selic: this.selic,
       rendimentoCdi: this.rendimentoCdi,

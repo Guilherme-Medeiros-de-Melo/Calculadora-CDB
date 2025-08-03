@@ -18,42 +18,65 @@ export class AppComponent {
   months!: number;
   grossValue!: number;
   netValue!: number;
-  yearlyInvestment!: number;
+  monthlyInvestment!: number;
   taxRate!: number;
   totalTax!: number;
   yearlyReturnRate!: number;
+  monthlyReturnRate!: number;
 
-  investmentReturns!: YearlyInvestmentReturns[];
+  investmentReturns: YearlyInvestmentReturns[] = [];
 
   onCalculateInvestmentResults(investmentData: InvestimentData) {
-    this.essentialsLog();
-    
     this.taxRate = this.calculateTaxRate(investmentData.tempo);
 
-    this.yearlyReturnRate = investmentData.selic * (investmentData.rendimentoCdi / 100);
-    this.grossValue = investmentData.valorInicial;
-    this.yearlyInvestment = investmentData.aplicacaoAnual;
-    this.years = Math.floor(investmentData.tempo / 12);
-    this.months = investmentData.tempo % 12;
+    this.formatInvestmentData(investmentData);
 
-    const appliedValue = this.grossValue + this.yearlyInvestment;
-    const grossValue = appliedValue * this.yearlyReturnRate;
-    const taxValue = appliedValue * this.taxRate;
-    const netValue = grossValue - taxValue;
-    const netValuePercentage = (netValue - appliedValue) / appliedValue;
+    this.essentialsLog();
 
-    for (let year = 0; year <= this.years; year++) {
-      this.investmentReturns.push({
-        appliedValue: appliedValue,
-        grossValue: grossValue,
-        taxValue: taxValue,
-        netValue: netValue,
-        netValuePercentage: netValuePercentage,
-      });
+    const initialValue = this.grossValue;
+      let appliedValue = this.grossValue;
+      let grossValue;
+      let grossNetValue;
+      let taxValue;
+      let netValue;
+      let netValuePercentage;
+
+    for (let month = 1; month <= this.months; month++) {
+      const initialValue = this.grossValue;
+
+      appliedValue += this.grossValue + this.monthlyInvestment;
+      grossValue = appliedValue + appliedValue * this.monthlyReturnRate;
+      grossNetValue = grossValue - appliedValue;
+      taxValue = grossNetValue * this.taxRate;
+      netValue = grossNetValue - taxValue;
+      netValuePercentage = netValue / appliedValue;
+
+      if (month % 12 === 0 || month === this.months)  {
+        this.investmentReturns.push({
+          appliedValue: appliedValue,
+          grossValue: grossValue,
+          taxValue: taxValue,
+          netValue: netValue,
+          netValuePercentage: netValuePercentage,
+        });
+      }
+
+      this.grossValue = appliedValue;
     }
+
+    console.log(this.investmentReturns);
   }
 
-  calculateTaxRate(tempo: number) {
+  private formatInvestmentData(investmentData: InvestimentData) {
+    this.monthlyReturnRate =
+      (investmentData.selic * (investmentData.rendimentoCdi / 100)) / 100 / 12;
+    this.grossValue = investmentData.valorInicial;
+    this.monthlyInvestment = investmentData.aplicacaoMensal;
+    this.years = Math.floor(investmentData.tempo / 12);
+    this.months = investmentData.tempo;
+  }
+
+  calculateTaxRate(tempo: number): number {
     if (tempo <= 6) {
       return 0.225;
     } else if (tempo <= 12) {
@@ -65,12 +88,12 @@ export class AppComponent {
     }
   }
 
-  essentialsLog(){
-    console.log(this.years);
-    console.log(this.months);
-    console.log(this.taxRate);
-    console.log(this.yearlyInvestment);
-    console.log(this.yearlyReturnRate);
-    console.log(this.grossValue);
+  essentialsLog() {
+    console.log(this.years + ' Years');
+    console.log(this.months + ' Months');
+    console.log(this.taxRate + ' taxRate');
+    console.log(this.monthlyInvestment + ' monthInvest');
+    console.log(this.yearlyReturnRate + ' yearReturn');
+    console.log(this.grossValue + ' grossValue');
   }
 }
