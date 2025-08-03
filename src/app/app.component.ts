@@ -31,37 +31,39 @@ export class AppComponent {
 
     this.formatInvestmentData(investmentData);
 
-    this.essentialsLog();
-
-    const initialValue = this.grossValue;
-      let appliedValue = this.grossValue;
-      let grossValue;
-      let grossNetValue;
-      let taxValue;
-      let netValue;
-      let netValuePercentage;
+    let originalAppliedValue = this.grossValue + this.monthlyInvestment;
+    let thisMonthTotal = this.grossValue;
+    let grossValue = 0;
+    let grossNetValue = 0;
+    let taxValue = 0;
+    let totalTaxValue = 0;
+    let netValue = 0;
 
     for (let month = 1; month <= this.months; month++) {
-      const initialValue = this.grossValue;
-
-      appliedValue += this.grossValue + this.monthlyInvestment;
-      grossValue = appliedValue + appliedValue * this.monthlyReturnRate;
-      grossNetValue = grossValue - appliedValue;
-      taxValue = grossNetValue * this.taxRate;
-      netValue = grossNetValue - taxValue;
-      netValuePercentage = netValue / appliedValue;
-
-      if (month % 12 === 0 || month === this.months)  {
-        this.investmentReturns.push({
-          appliedValue: appliedValue,
-          grossValue: grossValue,
-          taxValue: taxValue,
-          netValue: netValue,
-          netValuePercentage: netValuePercentage,
-        });
+      if (month != 1) {
+        originalAppliedValue += this.monthlyInvestment;
       }
 
-      this.grossValue = appliedValue;
+      thisMonthTotal += this.monthlyInvestment;
+
+      grossValue = thisMonthTotal * (1 + this.monthlyReturnRate);
+      grossNetValue = grossValue - thisMonthTotal;
+      
+      taxValue = grossNetValue * this.taxRate;
+      totalTaxValue += taxValue;
+      netValue = grossNetValue - taxValue;
+
+      thisMonthTotal += netValue;
+
+      if (month % 12 == 0 || month == this.months) {
+        this.investmentReturns.push({
+          appliedValue: originalAppliedValue,
+          grossValue: grossValue,
+          taxValue: totalTaxValue,
+          netValue: thisMonthTotal - originalAppliedValue,
+          netValuePercentage: (thisMonthTotal / originalAppliedValue) * 10,
+        });
+      }
     }
 
     console.log(this.investmentReturns);
@@ -86,14 +88,5 @@ export class AppComponent {
     } else {
       return 0.15;
     }
-  }
-
-  essentialsLog() {
-    console.log(this.years + ' Years');
-    console.log(this.months + ' Months');
-    console.log(this.taxRate + ' taxRate');
-    console.log(this.monthlyInvestment + ' monthInvest');
-    console.log(this.yearlyReturnRate + ' yearReturn');
-    console.log(this.grossValue + ' grossValue');
   }
 }
