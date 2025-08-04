@@ -1,5 +1,6 @@
 <table>
   <tr>
+    <td>Ano</td>
     <td>Valor aplicado</td>
     <td>Rendimento bruto</td>
     <td>Valor pago IR</td>
@@ -7,13 +8,14 @@
     <td>Rentabilidade líquida</td>
   </tr>
 
-  @for (year of investmentYears; track $index) {
+  @for (year of investmentReturns(); track $index) {
   <tr>
-    <td>1</td>
-    <td>1</td>
-    <td>1</td>
-    <td>1</td>
-    <td>1</td>
+    <td>{{$index + 1}}</td>
+    <td>{{investmentReturns()[$index].appliedValue | currency : 'BRL'}}</td>
+    <td>{{investmentReturns()[$index].grossValue | currency : 'BRL'}}</td>
+    <td>{{investmentReturns()[$index].taxValue | currency : 'BRL'}}</td>
+    <td>{{investmentReturns()[$index].netValue | currency : 'BRL'}}</td>
+    <td>{{investmentReturns()[$index].netValuePercentage | percent: '1.2-2'}}</td>
   </tr>
   }
 </table>

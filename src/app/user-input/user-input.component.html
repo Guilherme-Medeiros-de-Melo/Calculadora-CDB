@@ -3,25 +3,25 @@
     <tr>
       <td>
         <label for="valor-inicial" class="active">Valor Inicial (R$)</label>
-        <input id="valor-inicial" name="valor-inicial" value="1000,00" [(ngModel)]="valorInicial" />
+        <input id="valor-inicial" name="valor-inicial" type="number" [(ngModel)]="valorInicial" />
       </td>
       <td>
         <label for="aplicacao-anual" class="active">Aplicação Anual (R$)</label>
-        <input id="aplicacao-anual" name="aplicacao-mensal" value="100,00" [(ngModel)]="aplicacaoMensal"/>
+        <input id="aplicacao-anual" name="aplicacao-mensal" type="number" [(ngModel)]="aplicacaoMensal"/>
       </td>
       <td>
         <label for="tempo" class="active">Tempo de Aplicação (M)</label>
-        <input id="tempo" name="tempo" value="12" [(ngModel)]="tempo"/>
+        <input id="tempo" name="tempo" type="number" [(ngModel)]="tempo"/>
       </td>
     </tr>
     <tr>
       <td>
         <label for="selic-anual" class="active">Taxa SELIC (%)</label>
-        <input id="selic" name="selic" value="14,5" [(ngModel)]="selic"/>
+        <input id="selic" name="selic" type="number" [(ngModel)]="selic"/>
       </td>
       <td>
         <label for="rendimento-cdi" class="active">Rendimento CDI (%)</label>
-        <input id="rendimento-cdi" name="rendimento-cdi" value="100" [(ngModel)]="rendimentoCdi"/>
+        <input id="rendimento-cdi" name="rendimento-cdi" type="number" [(ngModel)]="rendimentoCdi"/>
       </td>
     </tr>
     <tr>
