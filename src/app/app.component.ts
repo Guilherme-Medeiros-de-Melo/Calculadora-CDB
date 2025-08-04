@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { UserInputComponent } from './user-input/user-input.component';
 import { ResultTableComponent } from './result-table/result-table.component';
@@ -26,12 +26,16 @@ export class AppComponent {
 
   investmentReturns: YearlyInvestmentReturns[] = [];
 
+  buildTable = output<YearlyInvestmentReturns[]>();
+
   onCalculateInvestmentResults(investmentData: InvestimentData) {
+    this.investmentReturns = [];
+    
     this.taxRate = this.calculateTaxRate(investmentData.tempo);
 
     this.formatInvestmentData(investmentData);
 
-    let originalAppliedValue = this.grossValue + this.monthlyInvestment;
+    let originalAppliedValue = this.grossValue;
     let thisMonthTotal = this.grossValue;
     let grossValue = 0;
     let grossNetValue = 0;
@@ -40,32 +44,31 @@ export class AppComponent {
     let netValue = 0;
 
     for (let month = 1; month <= this.months; month++) {
-      if (month != 1) {
-        originalAppliedValue += this.monthlyInvestment;
-      }
-
-      thisMonthTotal += this.monthlyInvestment;
-
       grossValue = thisMonthTotal * (1 + this.monthlyReturnRate);
       grossNetValue = grossValue - thisMonthTotal;
-      
+  
       taxValue = grossNetValue * this.taxRate;
       totalTaxValue += taxValue;
+      
       netValue = grossNetValue - taxValue;
-
       thisMonthTotal += netValue;
+
+      originalAppliedValue += this.monthlyInvestment;
+      thisMonthTotal += this.monthlyInvestment;
 
       if (month % 12 == 0 || month == this.months) {
         this.investmentReturns.push({
           appliedValue: originalAppliedValue,
-          grossValue: grossValue,
+          grossValue: thisMonthTotal - originalAppliedValue + totalTaxValue,
           taxValue: totalTaxValue,
           netValue: thisMonthTotal - originalAppliedValue,
-          netValuePercentage: (thisMonthTotal / originalAppliedValue) * 10,
+          netValuePercentage: (thisMonthTotal / originalAppliedValue) - 1,
         });
       }
     }
 
+    this.buildTable.emit(this.investmentReturns);
+    
     console.log(this.investmentReturns);
   }
 
