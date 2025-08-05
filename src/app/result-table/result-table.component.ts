@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
-import { YearlyInvestmentReturns } from '../user-input/user-input.model';
 import { CurrencyPipe, PercentPipe } from '@angular/common';
+import { InvestmentService } from '../investment.service';
 
 @Component({
   selector: 'app-result-table',
@@ -10,9 +10,9 @@ import { CurrencyPipe, PercentPipe } from '@angular/common';
   styleUrl: './result-table.component.css',
 })
 export class ResultTableComponent {
-  investmentReturns = input.required<YearlyInvestmentReturns[]>();
-  
-  onBuildTable(investmentReturns: YearlyInvestmentReturns[]){
-    console.log("Table built");
+  constructor(private investmentService: InvestmentService) {}
+
+  get results(){
+    return this.investmentService.investmentReturns;
   }
 }

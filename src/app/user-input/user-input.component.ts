@@ -1,12 +1,12 @@
 import { Component, output } from '@angular/core';
-import { ResultTableComponent } from '../result-table/result-table.component';
 import { FormsModule } from '@angular/forms';
 import { InvestimentData } from './user-input.model';
+import { InvestmentService } from '../investment.service';
 
 @Component({
   selector: 'app-user-input',
   standalone: true,
-  imports: [FormsModule, ResultTableComponent],
+  imports: [FormsModule],
   templateUrl: './user-input.component.html',
   styleUrl: './user-input.component.css',
 })
@@ -17,10 +17,12 @@ export class UserInputComponent {
   selic: number = 14.5;
   rendimentoCdi: number = 120;
 
+  constructor(private investmentService: InvestmentService) {}
+
   calculate = output<InvestimentData>();
 
   onSubmit() {
-    this.calculate.emit({
+    this.investmentService.calculateInvestmentResults({
       valorInicial: this.valorInicial,
       aplicacaoMensal: this.aplicacaoMensal,
       tempo: this.tempo,
